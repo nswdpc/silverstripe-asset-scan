@@ -44,7 +44,7 @@ class BackendResponse
 
         if($this->isFound) {
             // Create and throw exception immediately
-            $exception = new VirusFoundException();
+            $exception = new VirusFoundException(_t('AssetScan.VIRUS_FOUND', 'Virus found') );
             $exception->setBackendResponse($this);
             throw $exception;
         }

@@ -26,7 +26,7 @@ class ClamAVBackend extends Backend
         }
         $address = self::config()->get('address');
         if(!$address) {
-            throw new \RuntimeException("No unix socket or TCP socket address provided for ClamAV scanner");
+            throw new \RuntimeException( _t("AssetScan.NO_ADDRESS_PROVIDED", "No unix socket or TCP socket address provided for ClamAV scanner") );
         }
         $socket = (new \Socket\Raw\Factory())->createClient( $address );
         $this->client = new \Xenolope\Quahog\Client(
