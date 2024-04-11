@@ -12,7 +12,8 @@ use SilverStripe\Assets\File;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\SapphireTest;
 
-class BackendTest extends SapphireTest {
+class BackendTest extends SapphireTest
+{
 
     protected $usesDatabase = false;
 
@@ -37,44 +38,48 @@ class BackendTest extends SapphireTest {
         parent::tearDown();
     }
 
-    public function testFailString() {
+    public function testFailString()
+    {
         try {
             $backend = Backend::create();
-            $response = $backend->scanStream( TestClient::BLOCK_SCAN_STRING );
+            $response = $backend->scanStream(TestClient::BLOCK_SCAN_STRING);
         } catch (\Exception $e) {
             $this->assertEquals(VirusFoundException::class, get_class($e));
         }
 
     }
 
-    public function testOkString() {
+    public function testOkString()
+    {
         try {
             $backend = Backend::create();
-            $response = $backend->scanStream( TestClient::OK_SCAN_STRING );
-            $this->assertTrue( $response->isValid(), "Response is valid" );
+            $response = $backend->scanStream(TestClient::OK_SCAN_STRING);
+            $this->assertTrue($response->isValid(), "Response is valid");
         } catch (\Exception $e) {
             $this->assertFalse(true, "No exception should be thrown");
         }
     }
 
-    public function testScanFile() {
+    public function testScanFile()
+    {
         try {
             $path = dirname(__FILE__) . "/data/file.txt";
             $backend = Backend::create();
-            $response = $backend->scanFile( $path );
-            $this->assertTrue( $response->isValid(), "Response is valid" );
+            $response = $backend->scanFile($path);
+            $this->assertTrue($response->isValid(), "Response is valid");
         } catch (\Exception $e) {
             $this->assertFalse(true, "No exception should be thrown");
         }
     }
 
-    public function testScanResource() {
+    public function testScanResource()
+    {
         try {
             $path = dirname(__FILE__) . "/data/file.txt";
             $handle = fopen($path, 'r');
             $backend = Backend::create();
-            $response = $backend->scanResource( $handle );
-            $this->assertTrue( $response->isValid(), "Response is valid" );
+            $response = $backend->scanResource($handle);
+            $this->assertTrue($response->isValid(), "Response is valid");
         } catch (\Exception $e) {
             $this->assertFalse(true, "No exception should be thrown");
         } finally {
@@ -84,19 +89,21 @@ class BackendTest extends SapphireTest {
         }
     }
 
-    public function testScanStream() {
+    public function testScanStream()
+    {
         try {
             $path = dirname(__FILE__) . "/data/file.txt";
             $contents = file_get_contents($path);
             $backend = Backend::create();
-            $response = $backend->scanStream( $contents );
-            $this->assertTrue( $response->isValid(), "Response is valid" );
+            $response = $backend->scanStream($contents);
+            $this->assertTrue($response->isValid(), "Response is valid");
         } catch (\Exception $e) {
             $this->assertFalse(true, "No exception should be thrown");
         }
     }
 
-    public function testFileSetFromLocalFile() {
+    public function testFileSetFromLocalFile()
+    {
         try {
             $file = File::create();
             $path = dirname(__FILE__) . "/data/file.txt";
@@ -115,14 +122,15 @@ class BackendTest extends SapphireTest {
         }
     }
 
-    public function testFileSetFromString() {
+    public function testFileSetFromString()
+    {
         try {
             $file = File::create();
             $result = $file->setFromString(
                 TestClient::BLOCK_SCAN_STRING,
                 "block.txt"
             );
-            $this->assertEmpty( $result );
+            $this->assertEmpty($result);
         } catch (\Exception $e) {
             $this->assertEquals(VirusFoundException::class, get_class($e));
         } finally {
@@ -133,7 +141,8 @@ class BackendTest extends SapphireTest {
         }
     }
 
-    public function testFileSetFromStream() {
+    public function testFileSetFromStream()
+    {
         try {
             $handle = $file = $path = null;
             $file = File::create();
@@ -148,7 +157,7 @@ class BackendTest extends SapphireTest {
             $this->assertFalse(true, "No exception should be thrown");
         } finally {
             if(is_resource($handle)) {
-                fclose($resource);
+                fclose($handle);
             }
             // Clean up
             if($file) {

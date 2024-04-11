@@ -7,7 +7,8 @@ use NSWDPC\AssetScan\VirusFoundException;
 /**
  * Test client handles test scans
  */
-class TestClient {
+class TestClient
+{
 
     /**
      * A string representing something that should be blocked
@@ -24,7 +25,8 @@ class TestClient {
     /**
      * Scan file on local path
      */
-    public function scanFile(string $path) {
+    public function scanFile(string $path)
+    {
         $contents = file_get_contents($path);
         return $this->scanStream($contents);
     }
@@ -32,7 +34,8 @@ class TestClient {
     /**
      * Scan a resource in chunks
      */
-    public function scanResource($resource, int $max_chunk_size = 8192) {
+    public function scanResource($resource, int $max_chunk_size = 8192)
+    {
         if(!is_resource($resource)) {
             throw new \InvalidArgumentException("Resource argument is not a resource");
         }
@@ -43,7 +46,8 @@ class TestClient {
         return $this->scanStream($contents, $max_chunk_size);
     }
 
-    public function scanStream(string $contents, int $max_chunk_size = 8192) {
+    public function scanStream(string $contents, int $max_chunk_size = 8192)
+    {
         if($contents == self::BLOCK_SCAN_STRING) {
             return new TestClientResult(true, false, "BLOCK_SCAN_STRING signature found", "test-fail");
         } else {
@@ -52,4 +56,3 @@ class TestClient {
     }
 
 }
-

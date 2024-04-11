@@ -43,14 +43,16 @@ abstract class Backend
 
     /**
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->createClient();
     }
 
     /**
      * Return configured max chunk size or default value
      */
-    public function getSocketTimeout() : int {
+    public function getSocketTimeout() : int
+    {
         $socketTimeout = self::config()->get('socket_timeout');
         if(!is_int($socketTimeout) || $socketTimeout < 0) {
             $socketTimeout = self::DEFAULT_SOCKET_TIMEOUT;
@@ -61,7 +63,8 @@ abstract class Backend
     /**
      * Return configured max chunk size or default value
      */
-    public function getMaxChunkSize() : int {
+    public function getMaxChunkSize() : int
+    {
         $maxChunkSize = self::config()->get('max_chunk_size');
         if(!is_int($maxChunkSize) || $maxChunkSize < 0) {
             $maxChunkSize = self::DEFAULT_MAX_CHUNK_SIZE;
@@ -77,7 +80,8 @@ abstract class Backend
     /**
      * Allow access to the client
      */
-    public function getClient() {
+    public function getClient()
+    {
         return $this->client;
     }
 

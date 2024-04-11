@@ -5,7 +5,8 @@ namespace NSWDPC\AssetScan;
 /**
  * Specific exception for a scan returned a virus found result
  */
-class VirusFoundException extends \Exception {
+class VirusFoundException extends \Exception
+{
 
     /**
      * Store the response of the scan
@@ -15,7 +16,8 @@ class VirusFoundException extends \Exception {
     /**
      * Set a response
      */
-    public function setBackendResponse(BackendResponse $response) {
+    public function setBackendResponse(BackendResponse $response)
+    {
         $this->response = $response;
         Logger::log(
             json_encode([

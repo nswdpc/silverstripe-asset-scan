@@ -12,7 +12,8 @@ use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\SapphireTest;
 
-class AssetStoreTest extends SapphireTest {
+class AssetStoreTest extends SapphireTest
+{
 
     protected $usesDatabase = false;
 
@@ -25,19 +26,20 @@ class AssetStoreTest extends SapphireTest {
         Injector::inst()->load($spec);
     }
 
-    public function testAssetStoreConfiguration() {
+    public function testAssetStoreConfiguration()
+    {
         $assetStore = Injector::inst()->get(AssetStore::class);
-        $this->assertInstanceof( FlysystemAssetStore::class, $assetStore );
-        $this->assertInstanceof( ScanningFlysystemAssetStore::class, $assetStore );
+        $this->assertInstanceof(FlysystemAssetStore::class, $assetStore);
+        $this->assertInstanceof(ScanningFlysystemAssetStore::class, $assetStore);
 
         $publicFs = $assetStore->getPublicFilesystem();
-        $this->assertInstanceof( Filesystem::class, $publicFs );
+        $this->assertInstanceof(Filesystem::class, $publicFs);
         $publicAdapter = $publicFs->getAdapter();
-        $this->assertInstanceof( PublicAssetAdapter::class, $publicAdapter );
+        $this->assertInstanceof(PublicAssetAdapter::class, $publicAdapter);
 
         $protectedFs = $assetStore->getProtectedFilesystem();
-        $this->assertInstanceof( Filesystem::class, $protectedFs );
+        $this->assertInstanceof(Filesystem::class, $protectedFs);
         $protectedAdapter = $protectedFs->getAdapter();
-        $this->assertInstanceof( ProtectedAssetAdapter::class, $protectedAdapter );
+        $this->assertInstanceof(ProtectedAssetAdapter::class, $protectedAdapter);
     }
 }

@@ -35,7 +35,8 @@ class BackendResponse
      * @param string $reason the backend reason string, optional
      * @param string $id backend session id for the scan, optional
      */
-    public function __construct(bool $isFound, bool $success, ?string $reason = null, ?string $id = null ) {
+    public function __construct(bool $isFound, bool $success, ?string $reason = null, ?string $id = null)
+    {
 
         $this->isFound = $isFound;
         $this->success = $success;
@@ -44,7 +45,7 @@ class BackendResponse
 
         if($this->isFound) {
             // Create and throw exception immediately
-            $exception = new VirusFoundException(_t('AssetScan.VIRUS_FOUND', 'Virus found') );
+            $exception = new VirusFoundException(_t('AssetScan.VIRUS_FOUND', 'Virus found'));
             $exception->setBackendResponse($this);
             throw $exception;
         }
@@ -59,28 +60,32 @@ class BackendResponse
     /**
      * Whether virus was found
      */
-    public function isFound() : bool {
+    public function isFound() : bool
+    {
         return $this->isFound;
     }
 
     /**
      * Response valid?
      */
-    public function isValid() : bool {
+    public function isValid() : bool
+    {
         return $this->success;
     }
 
     /**
      * Response reason
      */
-    public function getReason() : ?string {
+    public function getReason() : ?string
+    {
         return $this->reason;
     }
 
     /**
      * Response scan id
      */
-    public function getId() : ?string {
+    public function getId() : ?string
+    {
         return $this->id;
     }
 
