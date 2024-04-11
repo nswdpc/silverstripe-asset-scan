@@ -1,6 +1,6 @@
 {
     "name": "nswdpc/silverstripe-asset-scan",
-    "description": "Provides and asset store and a scanning backend for Silverstripe assets",
+    "description": "Provides an asset store and a scanning backend for Silverstripe assets",
     "type": "silverstripe-vendormodule",
     "keywords": [
         "silverstripe",
