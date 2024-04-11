@@ -21,7 +21,7 @@ class ScanningFlysystemAssetStore extends FlysystemAssetStore
     {
         try {
             if(!is_resource($stream)) {
-                throw new \InvalidArgumentException("The argument is not a valid resource");
+                throw new \InvalidArgumentException("The stream argument is not a valid resource");
             }
             // Scanning will throw a VirusFoundException or \Exception on failure
             $response = Backend::create()->scanResource($stream);
