@@ -7,15 +7,3 @@ SilverStripe\Core\Injector\Injector:
   NSWDPC\AssetScan\Backend:
     # set default backend
     class: 'NSWDPC\AssetScan\ClamAVBackend'
----
-Name: 'nswdpc-asset-scan-assetstore'
-After:
-  - '#assetscore'
----
-SilverStripe\Core\Injector\Injector:
-  # Define alternative SS asset backend
-  SilverStripe\Assets\Storage\AssetStore:
-    class: 'NSWDPC\AssetScan\ScanningFlysystemAssetStore'
-    properties:
-      PublicFilesystem: '%$League\Flysystem\Filesystem.public'
-      ProtectedFilesystem: '%$League\Flysystem\Filesystem.protected'

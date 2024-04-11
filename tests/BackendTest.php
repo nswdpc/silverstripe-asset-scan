@@ -5,6 +5,9 @@ namespace NSWDPC\AssetScan\Tests;
 use NSWDPC\AssetScan\Backend;
 use NSWDPC\AssetScan\BackendResponse;
 use NSWDPC\AssetScan\VirusFoundException;
+use NSWDPC\AssetScan\ScanningFlysystemAssetStore;
+use SilverStripe\Assets\Storage\AssetStore;
+use SilverStripe\Assets\Flysystem\FlysystemAssetStore;
 use SilverStripe\Assets\File;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\SapphireTest;
@@ -13,10 +16,16 @@ class BackendTest extends SapphireTest {
 
     protected $usesDatabase = false;
 
-
     protected function setUp(): void
     {
         parent::setUp();
+
+        // Set up scanning asset store using default config
+        $spec = Injector::inst()->getServiceSpec(AssetStore::class);
+        $spec['class'] = ScanningFlysystemAssetStore::class;
+        Injector::inst()->load($spec);
+
+        // Set up backend
         Injector::inst()->registerService(
             new TestScanningBackend(),
             Backend::class
