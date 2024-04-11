@@ -1,0 +1,30 @@
+{
+    "name": "nswdpc/silverstripe-asset-scan",
+    "description": "Provides and asset store and a scanning backend for Silverstripe assets",
+    "type": "silverstripe-vendormodule",
+    "keywords": [
+        "silverstripe",
+        "assets",
+        "file scan",
+        "upload",
+        "clamav",
+        "clam"
+    ],
+    "homepage": "",
+    "license": "BSD-3-Clause",
+    "require": {
+        "xenolope/quahog": "^3",
+        "silverstripe/assets": "^1.13 || ^2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5",
+        "friendsofphp/php-cs-fixer": "^3"
+    },
+    "autoload": {
+        "psr-4": {
+            "NSWDPC\\AssetScan\\": [
+                "src/"
+            ]
+        }
+    }
+}
