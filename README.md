@@ -6,7 +6,7 @@ This works with assets being stored via:
 + Uploads
 + File::setFrom* operations
 
-Currently, only ClamAV is supported via a unix socket or TCP socket, but the system allows for custom scanning backends to be created and configured.
+The module ships with a ClamAV backend where clamd can be contacted via a unix socket or TCP socket. The system allows for custom scanning backends to be created and configured.
 
 ## Requirements
 
@@ -18,17 +18,39 @@ To use clamd, you need to have that installed, configured and working.
 composer require nswdpc/silverstripe-asset-scan
 ```
 
-## License
+To use the replacement asset store, add configuration to your project.
 
-[BSD-3-Clause](./LICENSE.md)
+The name of the configuration block is up to you.
 
-## Documentation
+```yaml
+---
+Name: 'app-scanning-assetstore'
+After:
+  - '#assetscore'
+---
+SilverStripe\Core\Injector\Injector:
+  SilverStripe\Assets\Storage\AssetStore:
+    class: 'NSWDPC\AssetScan\ScanningFlysystemAssetStore'
+```
 
-> TBC
+After configuration flush, the project will be configured to use the asset store provided by this module. It will inherit the properties defined in `#assetscore` configuration.
 
-## Configuration
+To use the ClamAVBackend, you must set the socket address value:
 
-You can configure the socket address and chunk size (for chunked scans):
+```yml
+---
+Name: 'app-asset-scan-handling'
+After:
+  - '#nswdpc-asset-scan-handling'
+---
+NSWDPC\AssetScan\ClamAVBackend:
+  # specify a unix socket location
+  address: 'unix:///some/path/to/clamd.sock'
+```
+
+## Further configuration
+
+You can configure the maximum chunk size, for use with backends that do chunked scans.
 
 ```yml
 ---
@@ -37,17 +59,13 @@ After:
   - '#nswdpc-asset-scan-handling'
 ---
 NSWDPC\AssetScan\Backend:
-  # increase chunk size
-  max_chunk_size: 2097152
-NSWDPC\AssetScan\ClamAVBackend:
-  # specify a unix socket location
-  address: 'unix:///some/path/to/clamd.sock'
+  # increase chunk size to 20M, value is in bytes
+  max_chunk_size: 20971520
 ```
-
 
 ### Roll your own backend
 
-You can create your own scanning backend. It must extend `Backend`:
+You can use your own scanning backend via Injector. It must be a subclass of `\NSWDPC\AssetScan\Backend`:
 
 ```yml
 ---
@@ -58,8 +76,13 @@ After:
 SilverStripe\Core\Injector\Injector:
   NSWDPC\AssetScan\Backend:
     # set default backend
-    class: 'My\App\CustomScanner'
+    class: 'My\App\CustomScanBackend'
 ```
+
+## License
+
+[BSD-3-Clause](./LICENSE.md)
+
 
 ## Maintainers
 
