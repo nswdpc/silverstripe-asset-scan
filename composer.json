@@ -14,7 +14,7 @@
     "license": "BSD-3-Clause",
     "require": {
         "xenolope/quahog": "^3",
-        "silverstripe/assets": "^1.13"
+        "silverstripe/assets": "^2"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",
