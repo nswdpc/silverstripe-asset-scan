@@ -163,4 +163,52 @@ class AssetStoreTest extends SapphireTest
             }
         }
     }
+
+    /**
+     * Scan a blocked file, over limit set of 0. Should not fail
+     */
+    public function testBlockScanSizeZero() {
+        try {
+            $file = File::create();
+            $contents = TestClient::BLOCK_SCAN_STRING;
+            $size = strlen($contents);
+            Config::modify()->set(TestScanningBackend::class, 'bypass_over_size_bytes', 0);
+            $result = $file->setFromString(
+                $contents,
+                "block.txt"
+            );
+            $this->assertEquals($result['Filename'], "block.txt");
+        } catch (\Exception $e) {
+            $this->assertFalse(true, "scan should not fail");
+        } finally {
+            // Clean up
+            if($file) {
+                $file->deleteFile();
+            }
+        }
+    }
+
+    /**
+     * Scan a blocked file, over limit set of null. Should fail.
+     */
+    public function testBlockScanSizeNull() {
+        try {
+            $file = File::create();
+            $contents = TestClient::BLOCK_SCAN_STRING;
+            $size = strlen($contents);
+            Config::modify()->set(TestScanningBackend::class, 'bypass_over_size_bytes', null);
+            $result = $file->setFromString(
+                $contents,
+                "block.txt"
+            );
+            $this->assertEmpty($result);
+        } catch (\Exception $e) {
+            $this->assertEquals(VirusFoundException::class, get_class($e));
+        } finally {
+            // Clean up
+            if($file) {
+                $file->deleteFile();
+            }
+        }
+    }
 }
