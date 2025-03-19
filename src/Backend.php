@@ -36,6 +36,8 @@ abstract class Backend
      */
     const DEFAULT_SOCKET_TIMEOUT = 30;
 
+    private static ?int $bypass_over_size_bytes = null;
+
     /**
      * @var mixed
      */
