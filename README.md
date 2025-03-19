@@ -48,6 +48,15 @@ NSWDPC\AssetScan\ClamAVBackend:
   address: 'unix:///some/path/to/clamd.sock'
 ```
 
+You can also set a limit to avoid large files being passed to the backend:
+```yml
+NSWDPC\AssetScan\ClamAVBackend:
+  # null: all scanned
+  # 0: not passed to backend
+  # files over this size are not passed to the backend
+  bypass_over_size_bytes: 10485760
+```
+
 ## Further configuration
 
 You can configure the maximum chunk size, for use with backends that do chunked scans.
@@ -65,7 +74,7 @@ NSWDPC\AssetScan\Backend:
 
 ### Roll your own backend
 
-You can use your own scanning backend via Injector. It must be a subclass of `\NSWDPC\AssetScan\Backend`:
+You can use your own scanning backend via Injector, for instance to extend the ClamAVBackend class or have a completely different backend. It must be a subclass of `\NSWDPC\AssetScan\Backend`:
 
 ```yml
 ---
