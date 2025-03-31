@@ -35,6 +35,8 @@ class ScanningFlysystemAssetStore extends FlysystemAssetStore
                 $size = $result['size'] ?? 0;
                 if($size <= $limit) {
                     $response = $backend->scanResource($stream);
+                } else {
+                    Logger::log("(AssetScan) bypass scan, stream ({$size}) > limit {$limit}", "INFO");
                 }
             }
             // Handle default file operation
