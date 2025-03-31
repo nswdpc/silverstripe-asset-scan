@@ -3,6 +3,7 @@
 namespace NSWDPC\AssetScan;
 
 use SilverStripe\Assets\Flysystem\FlysystemAssetStore;
+use SilverStripe\Core\Config\Config;
 
 /**
  * A FlysystemAssetStore that scans a stream and throws exceptions if the scanning backend
@@ -24,7 +25,20 @@ class ScanningFlysystemAssetStore extends FlysystemAssetStore
                 throw new \InvalidArgumentException("The stream argument is not a valid resource");
             }
             // Scanning will throw a VirusFoundException or \Exception on failure
-            $response = Backend::create()->scanResource($stream);
+            $backend = Backend::create();
+            $limit = Config::inst()->get(get_class($backend), 'bypass_over_size_bytes');
+            if(is_null($limit)) {
+                $response = $backend->scanResource($stream);
+            } else {
+                // check size
+                $result = fstat($stream);
+                $size = $result['size'] ?? 0;
+                if($size <= $limit) {
+                    $response = $backend->scanResource($stream);
+                } else {
+                    Logger::log("(AssetScan) bypass scan, stream ({$size}) > limit {$limit}", "INFO");
+                }
+            }
             // Handle default file operation
             return parent::setFromStream($stream, $filename, $hash, $variant, $config);
         } catch (\Exception $e) {

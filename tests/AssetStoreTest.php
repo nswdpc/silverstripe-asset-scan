@@ -3,7 +3,10 @@
 namespace NSWDPC\AssetScan\Tests;
 
 use League\Flysystem\Filesystem;
+use NSWDPC\AssetScan\Backend;
 use NSWDPC\AssetScan\ScanningFlysystemAssetStore;
+use NSWDPC\AssetScan\VirusFoundException;
+use SilverStripe\Assets\File;
 use SilverStripe\Assets\Storage\AssetStore;
 use SilverStripe\Assets\Flysystem\FlysystemAssetStore;
 use SilverStripe\Assets\Flysystem\PublicAssetAdapter;
@@ -24,6 +27,12 @@ class AssetStoreTest extends SapphireTest
         $spec = Injector::inst()->getServiceSpec(AssetStore::class);
         $spec['class'] = ScanningFlysystemAssetStore::class;
         Injector::inst()->load($spec);
+
+        // Set up backend
+        Injector::inst()->registerService(
+            new TestScanningBackend(),
+            Backend::class
+        );
     }
 
     public function testAssetStoreConfiguration()
@@ -41,5 +50,165 @@ class AssetStoreTest extends SapphireTest
         $this->assertInstanceof(Filesystem::class, $protectedFs);
         $protectedAdapter = $protectedFs->getAdapter();
         $this->assertInstanceof(ProtectedAssetAdapter::class, $protectedAdapter);
+    }
+
+    /**
+     * Scan all, as limit is set
+     */
+    public function testScanSizeNull() {
+        Config::modify()->set(TestScanningBackend::class, 'bypass_over_size_bytes', null);
+        $file = File::create();
+        $path = dirname(__FILE__) . "/data/file.txt";
+        $result = $file->setFromLocalFile(
+            $path,
+            "file.txt"
+        );
+        $this->assertEquals($result['Filename'], "file.txt");
+    }
+
+    /**
+     * No scan file, size is over limit of 0 (scan all)
+     */
+    public function testScanSizeZero() {
+        Config::modify()->set(TestScanningBackend::class, 'bypass_over_size_bytes', 0);
+        $file = File::create();
+        $path = dirname(__FILE__) . "/data/file.txt";
+        $result = $file->setFromLocalFile(
+            $path,
+            "file.txt"
+        );
+        $this->assertEquals($result['Filename'], "file.txt");
+    }
+
+    /**
+     * No scan file, if size over limit
+     */
+    public function testScanSizeOverLimit() {
+        $file = File::create();
+        $path = dirname(__FILE__) . "/data/file.txt";
+        $size = filesize($path);
+        $limit = ($size-1);
+        Config::modify()->set(TestScanningBackend::class, 'bypass_over_size_bytes', $limit);
+        $result = $file->setFromLocalFile(
+            $path,
+            "file.txt"
+        );
+        $this->assertEquals($result['Filename'], "file.txt");
+    }
+
+    /**
+     * Scan file, under limit
+     */
+    public function testScanSizeUnderLimit() {
+        $file = File::create();
+        $path = dirname(__FILE__) . "/data/file.txt";
+        $size = filesize($path);
+        $limit = ($size+1);
+        Config::modify()->set(TestScanningBackend::class, 'bypass_over_size_bytes',  $limit);
+        $result = $file->setFromLocalFile(
+            $path,
+            "file.txt"
+        );
+        $this->assertEquals($result['Filename'], "file.txt");
+    }
+
+
+    /**
+     * Scan a blocked file, under limit. Should scan and fail
+     */
+    public function testBlockScanSizeUnderLimit() {
+        try {
+            $file = File::create();
+            $contents = TestClient::BLOCK_SCAN_STRING;
+            $size = strlen($contents);
+            $limit = ($size+1);
+            Config::modify()->set(TestScanningBackend::class, 'bypass_over_size_bytes',  $limit);
+            $result = $file->setFromString(
+                $contents,
+                "block.txt"
+            );
+            $this->assertEmpty($result);
+        } catch (\Exception $e) {
+            $this->assertEquals(VirusFoundException::class, get_class($e));
+        } finally {
+            // Clean up
+            if($file) {
+                $file->deleteFile();
+            }
+        }
+    }
+
+
+    /**
+     * Scan a blocked file, over limit. Should not fail
+     */
+    public function testBlockScanSizeOverLimit() {
+        try {
+            $file = File::create();
+            $contents = TestClient::BLOCK_SCAN_STRING;
+            $size = strlen($contents);
+            $limit = ($size-1);
+            Config::modify()->set(TestScanningBackend::class, 'bypass_over_size_bytes',  $limit);
+            $result = $file->setFromString(
+                $contents,
+                "block.txt"
+            );
+            $this->assertEquals($result['Filename'], "block.txt");
+        } catch (\Exception $e) {
+            $this->assertFalse(true, "scan should not fail");
+        } finally {
+            // Clean up
+            if($file) {
+                $file->deleteFile();
+            }
+        }
+    }
+
+    /**
+     * Scan a blocked file, over limit set of 0. Should not fail
+     */
+    public function testBlockScanSizeZero() {
+        try {
+            $file = File::create();
+            $contents = TestClient::BLOCK_SCAN_STRING;
+            $size = strlen($contents);
+            Config::modify()->set(TestScanningBackend::class, 'bypass_over_size_bytes', 0);
+            $result = $file->setFromString(
+                $contents,
+                "block.txt"
+            );
+            $this->assertEquals($result['Filename'], "block.txt");
+        } catch (\Exception $e) {
+            $this->assertFalse(true, "scan should not fail");
+        } finally {
+            // Clean up
+            if($file) {
+                $file->deleteFile();
+            }
+        }
+    }
+
+    /**
+     * Scan a blocked file, over limit set of null. Should fail.
+     */
+    public function testBlockScanSizeNull() {
+        try {
+            $file = File::create();
+            $contents = TestClient::BLOCK_SCAN_STRING;
+            $size = strlen($contents);
+            Config::modify()->set(TestScanningBackend::class, 'bypass_over_size_bytes', null);
+            $result = $file->setFromString(
+                $contents,
+                "block.txt"
+            );
+            $this->assertEmpty($result);
+        } catch (\Exception $e) {
+            $this->assertEquals(VirusFoundException::class, get_class($e));
+        } finally {
+            // Clean up
+            if($file) {
+                $file->deleteFile();
+            }
+        }
     }
 }

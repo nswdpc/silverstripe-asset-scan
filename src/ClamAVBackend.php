@@ -17,6 +17,8 @@ class ClamAVBackend extends Backend
      */
     private static $address = "";
 
+    private static ?int $bypass_over_size_bytes = 5242880;
+
     /**
      * Create the client for the backend
      */
