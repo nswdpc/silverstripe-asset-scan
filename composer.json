@@ -10,21 +10,32 @@
         "clamav",
         "clam"
     ],
-    "homepage": "",
     "license": "BSD-3-Clause",
     "require": {
         "xenolope/quahog": "^3",
         "silverstripe/assets": "^2"
     },
     "require-dev": {
+        "cambis/silverstripe-rector": "^1",
+        "cambis/silverstan": "^1",
+        "friendsofphp/php-cs-fixer": "^3",
         "phpunit/phpunit": "^9.5",
-        "friendsofphp/php-cs-fixer": "^3"
+        "phpstan/phpstan": "^1",
+        "rector/rector": "^1",
+        "nswdpc/ci-files": "dev-v-3",
+        "vlucas/phpdotenv": "^5"
     },
     "autoload": {
         "psr-4": {
             "NSWDPC\\AssetScan\\": [
                 "src/"
             ]
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "composer/installers": true,
+            "silverstripe/vendor-plugin": true
         }
     }
 }
