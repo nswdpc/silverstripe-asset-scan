@@ -17,7 +17,6 @@ use SilverStripe\Dev\SapphireTest;
 
 class AssetStoreTest extends SapphireTest
 {
-
     protected $usesDatabase = false;
 
     #[\Override]
@@ -56,7 +55,8 @@ class AssetStoreTest extends SapphireTest
     /**
      * Scan all, as limit is set
      */
-    public function testScanSizeNull(): void {
+    public function testScanSizeNull(): void
+    {
         Config::modify()->set(TestScanningBackend::class, 'bypass_over_size_bytes', null);
         $file = File::create();
         $path = __DIR__ . "/data/file.txt";
@@ -70,7 +70,8 @@ class AssetStoreTest extends SapphireTest
     /**
      * No scan file, size is over limit of 0 (scan all)
      */
-    public function testScanSizeZero(): void {
+    public function testScanSizeZero(): void
+    {
         Config::modify()->set(TestScanningBackend::class, 'bypass_over_size_bytes', 0);
         $file = File::create();
         $path = __DIR__ . "/data/file.txt";
@@ -84,11 +85,12 @@ class AssetStoreTest extends SapphireTest
     /**
      * No scan file, if size over limit
      */
-    public function testScanSizeOverLimit(): void {
+    public function testScanSizeOverLimit(): void
+    {
         $file = File::create();
         $path = __DIR__ . "/data/file.txt";
         $size = filesize($path);
-        $limit = ($size-1);
+        $limit = ($size - 1);
         Config::modify()->set(TestScanningBackend::class, 'bypass_over_size_bytes', $limit);
         $result = $file->setFromLocalFile(
             $path,
@@ -100,12 +102,13 @@ class AssetStoreTest extends SapphireTest
     /**
      * Scan file, under limit
      */
-    public function testScanSizeUnderLimit(): void {
+    public function testScanSizeUnderLimit(): void
+    {
         $file = File::create();
         $path = __DIR__ . "/data/file.txt";
         $size = filesize($path);
-        $limit = ($size+1);
-        Config::modify()->set(TestScanningBackend::class, 'bypass_over_size_bytes',  $limit);
+        $limit = ($size + 1);
+        Config::modify()->set(TestScanningBackend::class, 'bypass_over_size_bytes', $limit);
         $result = $file->setFromLocalFile(
             $path,
             "file.txt"
@@ -117,13 +120,14 @@ class AssetStoreTest extends SapphireTest
     /**
      * Scan a blocked file, under limit. Should scan and fail
      */
-    public function testBlockScanSizeUnderLimit(): void {
+    public function testBlockScanSizeUnderLimit(): void
+    {
         try {
             $file = File::create();
             $contents = TestClient::BLOCK_SCAN_STRING;
             $size = strlen($contents);
-            $limit = ($size+1);
-            Config::modify()->set(TestScanningBackend::class, 'bypass_over_size_bytes',  $limit);
+            $limit = ($size + 1);
+            Config::modify()->set(TestScanningBackend::class, 'bypass_over_size_bytes', $limit);
             $result = $file->setFromString(
                 $contents,
                 "block.txt"
@@ -133,7 +137,7 @@ class AssetStoreTest extends SapphireTest
             $this->assertEquals(VirusFoundException::class, $exception::class);
         } finally {
             // Clean up
-            if($file) {
+            if ($file) {
                 $file->deleteFile();
             }
         }
@@ -143,13 +147,14 @@ class AssetStoreTest extends SapphireTest
     /**
      * Scan a blocked file, over limit. Should not fail
      */
-    public function testBlockScanSizeOverLimit(): void {
+    public function testBlockScanSizeOverLimit(): void
+    {
         try {
             $file = File::create();
             $contents = TestClient::BLOCK_SCAN_STRING;
             $size = strlen($contents);
-            $limit = ($size-1);
-            Config::modify()->set(TestScanningBackend::class, 'bypass_over_size_bytes',  $limit);
+            $limit = ($size - 1);
+            Config::modify()->set(TestScanningBackend::class, 'bypass_over_size_bytes', $limit);
             $result = $file->setFromString(
                 $contents,
                 "block.txt"
@@ -159,7 +164,7 @@ class AssetStoreTest extends SapphireTest
             $this->assertFalse(true, "scan should not fail");
         } finally {
             // Clean up
-            if($file) {
+            if ($file) {
                 $file->deleteFile();
             }
         }
@@ -168,7 +173,8 @@ class AssetStoreTest extends SapphireTest
     /**
      * Scan a blocked file, over limit set of 0. Should not fail
      */
-    public function testBlockScanSizeZero(): void {
+    public function testBlockScanSizeZero(): void
+    {
         try {
             $file = File::create();
             $contents = TestClient::BLOCK_SCAN_STRING;
@@ -183,7 +189,7 @@ class AssetStoreTest extends SapphireTest
             $this->assertFalse(true, "scan should not fail");
         } finally {
             // Clean up
-            if($file) {
+            if ($file) {
                 $file->deleteFile();
             }
         }
@@ -192,7 +198,8 @@ class AssetStoreTest extends SapphireTest
     /**
      * Scan a blocked file, over limit set of null. Should fail.
      */
-    public function testBlockScanSizeNull(): void {
+    public function testBlockScanSizeNull(): void
+    {
         try {
             $file = File::create();
             $contents = TestClient::BLOCK_SCAN_STRING;
@@ -207,7 +214,7 @@ class AssetStoreTest extends SapphireTest
             $this->assertEquals(VirusFoundException::class, $exception::class);
         } finally {
             // Clean up
-            if($file) {
+            if ($file) {
                 $file->deleteFile();
             }
         }

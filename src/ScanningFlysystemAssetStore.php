@@ -12,7 +12,6 @@ use SilverStripe\Core\Config\Config;
  */
 class ScanningFlysystemAssetStore extends FlysystemAssetStore
 {
-
     /**
      * Pass file to scanner prior to Flysystem handling
      * @inheritdoc
@@ -22,20 +21,20 @@ class ScanningFlysystemAssetStore extends FlysystemAssetStore
     public function setFromStream($stream, $filename, $hash = null, $variant = null, $config = [])
     {
         try {
-            if(!is_resource($stream)) {
+            if (!is_resource($stream)) {
                 throw new \InvalidArgumentException("The stream argument is not a valid resource");
             }
 
             // Scanning will throw a VirusFoundException or \Exception on failure
             $backend = Backend::create();
             $limit = Config::inst()->get($backend::class, 'bypass_over_size_bytes');
-            if(is_null($limit)) {
+            if (is_null($limit)) {
                 $response = $backend->scanResource($stream);
             } else {
                 // check size
                 $result = fstat($stream);
                 $size = $result['size'] ?? 0;
-                if($size <= $limit) {
+                if ($size <= $limit) {
                     $response = $backend->scanResource($stream);
                 } else {
                     Logger::log("(AssetScan) bypass scan, stream ({$size}) > limit {$limit}", "INFO");
@@ -49,7 +48,7 @@ class ScanningFlysystemAssetStore extends FlysystemAssetStore
             throw $exception;
         } finally {
             // Ensure pointer is closed, if it exists
-            if(is_resource($stream)) {
+            if (is_resource($stream)) {
                 fclose($stream);
             }
         }

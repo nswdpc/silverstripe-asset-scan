@@ -3,18 +3,15 @@
 namespace NSWDPC\AssetScan\Tests;
 
 use NSWDPC\AssetScan\Backend;
-use NSWDPC\AssetScan\BackendResponse;
 use NSWDPC\AssetScan\VirusFoundException;
 use NSWDPC\AssetScan\ScanningFlysystemAssetStore;
 use SilverStripe\Assets\Storage\AssetStore;
-use SilverStripe\Assets\Flysystem\FlysystemAssetStore;
 use SilverStripe\Assets\File;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\SapphireTest;
 
 class BackendTest extends SapphireTest
 {
-
     protected $usesDatabase = false;
 
     #[\Override]
@@ -85,7 +82,7 @@ class BackendTest extends SapphireTest
         } catch (\Exception) {
             $this->assertFalse(true, "No exception should be thrown");
         } finally {
-            if(is_resource($handle)) {
+            if (is_resource($handle)) {
                 fclose($handle);
             }
         }
@@ -118,7 +115,7 @@ class BackendTest extends SapphireTest
             $this->assertFalse(true, "No exception should be thrown");
         } finally {
             // Clean up
-            if($file) {
+            if ($file) {
                 $file->deleteFile();
             }
         }
@@ -137,7 +134,7 @@ class BackendTest extends SapphireTest
             $this->assertEquals(VirusFoundException::class, $exception::class);
         } finally {
             // Clean up
-            if($file) {
+            if ($file) {
                 $file->deleteFile();
             }
         }
@@ -160,12 +157,12 @@ class BackendTest extends SapphireTest
         } catch (\Exception) {
             $this->assertFalse(true, "No exception should be thrown");
         } finally {
-            if(is_resource($handle)) {
+            if (is_resource($handle)) {
                 fclose($handle);
             }
 
             // Clean up
-            if($file) {
+            if ($file) {
                 $file->deleteFile();
             }
         }

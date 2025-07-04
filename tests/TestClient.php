@@ -2,25 +2,22 @@
 
 namespace NSWDPC\AssetScan\Tests;
 
-use NSWDPC\AssetScan\VirusFoundException;
-
 /**
  * Test client handles test scans
  */
 class TestClient
 {
-
     /**
      * A string representing something that should be blocked
      * @var string
      */
-    const BLOCK_SCAN_STRING = 'SCAN_BLOCK';
+    public const BLOCK_SCAN_STRING = 'SCAN_BLOCK';
 
     /**
      * A string representing something that should not be blocked
      * @var string
      */
-    const OK_SCAN_STRING = 'SCAN_OK';
+    public const OK_SCAN_STRING = 'SCAN_OK';
 
     /**
      * Scan file on local path
@@ -36,7 +33,7 @@ class TestClient
      */
     public function scanResource($resource, int $max_chunk_size = 8192)
     {
-        if(!is_resource($resource)) {
+        if (!is_resource($resource)) {
             throw new \InvalidArgumentException("Resource argument is not a resource");
         }
 
@@ -50,7 +47,7 @@ class TestClient
 
     public function scanStream(string $contents, int $max_chunk_size = 8192): \NSWDPC\AssetScan\Tests\TestClientResult
     {
-        if($contents === self::BLOCK_SCAN_STRING) {
+        if ($contents === self::BLOCK_SCAN_STRING) {
             return new TestClientResult(true, false, "BLOCK_SCAN_STRING signature found", "test-fail");
         } else {
             return new TestClientResult(false, true, "OK", "test-ok");

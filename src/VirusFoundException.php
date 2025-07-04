@@ -7,7 +7,6 @@ namespace NSWDPC\AssetScan;
  */
 class VirusFoundException extends \Exception
 {
-
     /**
      * Store the response of the scan
      */
