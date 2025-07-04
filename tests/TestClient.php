@@ -22,7 +22,7 @@ class TestClient
     /**
      * Scan file on local path
      */
-    public function scanFile(string $path)
+    public function scanFile(string $path): \NSWDPC\AssetScan\Tests\TestClientResult
     {
         $contents = file_get_contents($path);
         return $this->scanStream($contents);
@@ -31,7 +31,7 @@ class TestClient
     /**
      * Scan a resource in chunks
      */
-    public function scanResource($resource, int $max_chunk_size = 8192)
+    public function scanResource($resource, int $max_chunk_size = 8192): \NSWDPC\AssetScan\Tests\TestClientResult
     {
         if (!is_resource($resource)) {
             throw new \InvalidArgumentException("Resource argument is not a resource");
