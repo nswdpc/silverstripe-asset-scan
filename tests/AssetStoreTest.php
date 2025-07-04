@@ -30,7 +30,7 @@ class AssetStoreTest extends SapphireTest
 
         // Set up backend
         Injector::inst()->registerService(
-            new TestScanningBackend(),
+            TestScanningBackend::create(),
             Backend::class
         );
     }
@@ -137,6 +137,7 @@ class AssetStoreTest extends SapphireTest
             $this->assertEquals(VirusFoundException::class, $exception::class);
         } finally {
             // Clean up
+            /** @phpstan-ignore variable.undefined */
             if ($file) {
                 $file->deleteFile();
             }
@@ -164,6 +165,7 @@ class AssetStoreTest extends SapphireTest
             $this->assertFalse(true, "scan should not fail");
         } finally {
             // Clean up
+            /** @phpstan-ignore variable.undefined */
             if ($file) {
                 $file->deleteFile();
             }
@@ -189,6 +191,7 @@ class AssetStoreTest extends SapphireTest
             $this->assertFalse(true, "scan should not fail");
         } finally {
             // Clean up
+            /** @phpstan-ignore variable.undefined */
             if ($file) {
                 $file->deleteFile();
             }
@@ -214,6 +217,7 @@ class AssetStoreTest extends SapphireTest
             $this->assertEquals(VirusFoundException::class, $exception::class);
         } finally {
             // Clean up
+            /** @phpstan-ignore variable.undefined */
             if ($file) {
                 $file->deleteFile();
             }

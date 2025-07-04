@@ -26,7 +26,7 @@ class BackendTest extends SapphireTest
 
         // Set up backend
         Injector::inst()->registerService(
-            new TestScanningBackend(),
+            TestScanningBackend::create(),
             Backend::class
         );
     }
@@ -82,6 +82,7 @@ class BackendTest extends SapphireTest
         } catch (\Exception) {
             $this->assertFalse(true, "No exception should be thrown");
         } finally {
+            /** @phpstan-ignore variable.undefined */
             if (is_resource($handle)) {
                 fclose($handle);
             }
@@ -115,6 +116,7 @@ class BackendTest extends SapphireTest
             $this->assertFalse(true, "No exception should be thrown");
         } finally {
             // Clean up
+            /** @phpstan-ignore variable.undefined */
             if ($file) {
                 $file->deleteFile();
             }
@@ -134,6 +136,7 @@ class BackendTest extends SapphireTest
             $this->assertEquals(VirusFoundException::class, $exception::class);
         } finally {
             // Clean up
+            /** @phpstan-ignore variable.undefined */
             if ($file) {
                 $file->deleteFile();
             }
