@@ -3,20 +3,18 @@
 namespace NSWDPC\AssetScan\Tests;
 
 use NSWDPC\AssetScan\Backend;
-use NSWDPC\AssetScan\BackendResponse;
 use NSWDPC\AssetScan\VirusFoundException;
 use NSWDPC\AssetScan\ScanningFlysystemAssetStore;
 use SilverStripe\Assets\Storage\AssetStore;
-use SilverStripe\Assets\Flysystem\FlysystemAssetStore;
 use SilverStripe\Assets\File;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\SapphireTest;
 
 class BackendTest extends SapphireTest
 {
-
     protected $usesDatabase = false;
 
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();
@@ -28,101 +26,104 @@ class BackendTest extends SapphireTest
 
         // Set up backend
         Injector::inst()->registerService(
-            new TestScanningBackend(),
+            TestScanningBackend::create(),
             Backend::class
         );
     }
 
+    #[\Override]
     protected function tearDown(): void
     {
         parent::tearDown();
     }
 
-    public function testFailString()
+    public function testFailString(): void
     {
         try {
             $backend = Backend::create();
             $response = $backend->scanStream(TestClient::BLOCK_SCAN_STRING);
-        } catch (\Exception $e) {
-            $this->assertEquals(VirusFoundException::class, get_class($e));
+        } catch (\Exception $exception) {
+            $this->assertEquals(VirusFoundException::class, $exception::class);
         }
 
     }
 
-    public function testOkString()
+    public function testOkString(): void
     {
         try {
             $backend = Backend::create();
             $response = $backend->scanStream(TestClient::OK_SCAN_STRING);
             $this->assertTrue($response->isValid(), "Response is valid");
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->assertFalse(true, "No exception should be thrown");
         }
     }
 
-    public function testScanFile()
+    public function testScanFile(): void
     {
         try {
-            $path = dirname(__FILE__) . "/data/file.txt";
+            $path = __DIR__ . "/data/file.txt";
             $backend = Backend::create();
             $response = $backend->scanFile($path);
             $this->assertTrue($response->isValid(), "Response is valid");
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->assertFalse(true, "No exception should be thrown");
         }
     }
 
-    public function testScanResource()
+    public function testScanResource(): void
     {
         try {
-            $path = dirname(__FILE__) . "/data/file.txt";
+            $path = __DIR__ . "/data/file.txt";
             $handle = fopen($path, 'r');
             $backend = Backend::create();
             $response = $backend->scanResource($handle);
             $this->assertTrue($response->isValid(), "Response is valid");
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->assertFalse(true, "No exception should be thrown");
         } finally {
-            if(is_resource($handle)) {
+            /** @phpstan-ignore variable.undefined */
+            if (is_resource($handle)) {
                 fclose($handle);
             }
         }
     }
 
-    public function testScanStream()
+    public function testScanStream(): void
     {
         try {
-            $path = dirname(__FILE__) . "/data/file.txt";
+            $path = __DIR__ . "/data/file.txt";
             $contents = file_get_contents($path);
             $backend = Backend::create();
             $response = $backend->scanStream($contents);
             $this->assertTrue($response->isValid(), "Response is valid");
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->assertFalse(true, "No exception should be thrown");
         }
     }
 
-    public function testFileSetFromLocalFile()
+    public function testFileSetFromLocalFile(): void
     {
         try {
             $file = File::create();
-            $path = dirname(__FILE__) . "/data/file.txt";
+            $path = __DIR__ . "/data/file.txt";
             $result = $file->setFromLocalFile(
                 $path,
                 "file.txt"
             );
             $this->assertEquals('file.txt', $result['Filename']);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->assertFalse(true, "No exception should be thrown");
         } finally {
             // Clean up
-            if($file) {
+            /** @phpstan-ignore variable.undefined */
+            if ($file) {
                 $file->deleteFile();
             }
         }
     }
 
-    public function testFileSetFromString()
+    public function testFileSetFromString(): void
     {
         try {
             $file = File::create();
@@ -131,36 +132,40 @@ class BackendTest extends SapphireTest
                 "block.txt"
             );
             $this->assertEmpty($result);
-        } catch (\Exception $e) {
-            $this->assertEquals(VirusFoundException::class, get_class($e));
+        } catch (\Exception $exception) {
+            $this->assertEquals(VirusFoundException::class, $exception::class);
         } finally {
             // Clean up
-            if($file) {
+            /** @phpstan-ignore variable.undefined */
+            if ($file) {
                 $file->deleteFile();
             }
         }
     }
 
-    public function testFileSetFromStream()
+    public function testFileSetFromStream(): void
     {
         try {
-            $handle = $file = $path = null;
+            $handle = null;
+            $file = null;
+            $path = null;
             $file = File::create();
-            $path = dirname(__FILE__) . "/data/file.txt";
+            $path = __DIR__ . "/data/file.txt";
             $handle = fopen($path, 'r');
             $result = $file->setFromStream(
                 $handle,
                 "stream.txt"
             );
             $this->assertEquals('stream.txt', $result['Filename']);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->assertFalse(true, "No exception should be thrown");
         } finally {
-            if(is_resource($handle)) {
+            if (is_resource($handle)) {
                 fclose($handle);
             }
+
             // Clean up
-            if($file) {
+            if ($file) {
                 $file->deleteFile();
             }
         }

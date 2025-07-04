@@ -10,40 +10,42 @@ use Xenolope\Quahog\Result;
  */
 class ClamAVBackend extends Backend
 {
-
     /**
      * @config
-     * @var string
      */
-    private static $address = "";
+    private static string $address = "";
 
     private static ?int $bypass_over_size_bytes = 5242880;
 
     /**
      * Create the client for the backend
      */
+    #[\Override]
     public function createClient()
     {
-        if($this->client) {
+        if ($this->client) {
             return $this->client;
         }
+
         $address = self::config()->get('address');
-        if(!$address) {
+        if (!$address) {
             throw new \RuntimeException(_t("AssetScan.NO_ADDRESS_PROVIDED", "No unix socket or TCP socket address provided for ClamAV scanner"));
         }
+
         $socket = (new \Socket\Raw\Factory())->createClient($address);
         $this->client = new \Xenolope\Quahog\Client(
             $socket,
             $this->getSocketTimeout(),
             PHP_NORMAL_READ
         );
+        return null;
     }
 
     /**
      * Create and return a response based on the specific result object
-     * @param object $result
      */
-    protected function createResponse(object $result) : BackendResponse
+    #[\Override]
+    protected function createResponse(object $result): BackendResponse
     {
         return new BackendResponse($result->isFound(), $result->isOk(), $result->getReason(), $result->getId());
     }
@@ -51,7 +53,8 @@ class ClamAVBackend extends Backend
     /**
      * Scan a file based on a path
      */
-    public function scanFile(string $path) : BackendResponse
+    #[\Override]
+    public function scanFile(string $path): BackendResponse
     {
         return $this->createResponse($this->client->scanFile($path));
     }
@@ -59,7 +62,8 @@ class ClamAVBackend extends Backend
     /**
      * Scan a file based on a path
      */
-    public function multiScanFile(string $path) : BackendResponse
+    #[\Override]
+    public function multiScanFile(string $path): BackendResponse
     {
         return $this->createResponse($this->client->multiscanFile($path));
     }
@@ -67,7 +71,8 @@ class ClamAVBackend extends Backend
     /**
      * Scan a file based on a path
      */
-    public function contScan(string $path) : BackendResponse
+    #[\Override]
+    public function contScan(string $path): BackendResponse
     {
         return $this->createResponse($this->client->contScan($path));
     }
@@ -75,18 +80,21 @@ class ClamAVBackend extends Backend
     /**
      * Scan a resource pointer
      */
-    public function scanResource($resource) : BackendResponse
+    #[\Override]
+    public function scanResource($resource): BackendResponse
     {
-        if(!is_resource($resource)) {
+        if (!is_resource($resource)) {
             throw new \InvalidArgumentException("Resource value passed is not a resource");
         }
+
         return $this->createResponse($this->client->scanResourceStream($resource, $this->getMaxChunkSize()));
     }
 
     /**
      * Scan a string
      */
-    public function scanStream(string $contents) : BackendResponse
+    #[\Override]
+    public function scanStream(string $contents): BackendResponse
     {
         return $this->createResponse($this->client->scanStream($contents, $this->getMaxChunkSize()));
     }

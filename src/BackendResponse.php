@@ -7,27 +7,6 @@ namespace NSWDPC\AssetScan;
  */
 class BackendResponse
 {
-
-    /**
-     * @var bool
-     */
-    protected $isFound = true;
-
-    /**
-     * @var bool
-     */
-    protected $success = false;
-
-    /**
-     * @var string|null
-     */
-    protected $reason = null;
-
-    /**
-     * @var string|null
-     */
-    protected $id = null;
-
     /**
      * Create a response based on whatever the backend in use returned
      * @param bool $isFound whether the backend detected a virus
@@ -35,23 +14,18 @@ class BackendResponse
      * @param string $reason the backend reason string, optional
      * @param string $id backend session id for the scan, optional
      */
-    public function __construct(bool $isFound, bool $success, ?string $reason = null, ?string $id = null)
+    public function __construct(protected bool $isFound, protected bool $success, protected ?string $reason = null, protected ?string $id = null)
     {
 
-        $this->isFound = $isFound;
-        $this->success = $success;
-        $this->reason = $reason;
-        $this->id = $id;
-
-        if($this->isFound) {
+        if ($this->isFound) {
             // Create and throw exception immediately
             $exception = new VirusFoundException(_t('AssetScan.VIRUS_FOUND', 'Virus found'));
             $exception->setBackendResponse($this);
             throw $exception;
         }
 
-        if(!$this->success) {
-            $msg = "Scan failed: " . ($this->reason ? $this->reason : '');
+        if (!$this->success) {
+            $msg = "Scan failed: " . ($this->reason !== null && $this->reason !== '' ? $this->reason : '');
             Logger::log($msg, "ERROR");
             throw new \Exception($msg);
         }
@@ -60,7 +34,7 @@ class BackendResponse
     /**
      * Whether virus was found
      */
-    public function isFound() : bool
+    public function isFound(): bool
     {
         return $this->isFound;
     }
@@ -68,7 +42,7 @@ class BackendResponse
     /**
      * Response valid?
      */
-    public function isValid() : bool
+    public function isValid(): bool
     {
         return $this->success;
     }
@@ -76,7 +50,7 @@ class BackendResponse
     /**
      * Response reason
      */
-    public function getReason() : ?string
+    public function getReason(): ?string
     {
         return $this->reason;
     }
@@ -84,7 +58,7 @@ class BackendResponse
     /**
      * Response scan id
      */
-    public function getId() : ?string
+    public function getId(): ?string
     {
         return $this->id;
     }
