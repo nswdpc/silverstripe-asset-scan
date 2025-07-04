@@ -162,6 +162,7 @@ class AssetStoreTest extends SapphireTest
             );
             $this->assertEquals($result['Filename'], "block.txt");
         } catch (\Exception) {
+            /** @phpstan-ignore method.alreadyNarrowedType */
             $this->assertFalse(true, "scan should not fail");
         } finally {
             // Clean up
@@ -188,6 +189,7 @@ class AssetStoreTest extends SapphireTest
             );
             $this->assertEquals($result['Filename'], "block.txt");
         } catch (\Exception) {
+            /** @phpstan-ignore method.alreadyNarrowedType */
             $this->assertFalse(true, "scan should not fail");
         } finally {
             // Clean up

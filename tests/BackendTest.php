@@ -55,6 +55,7 @@ class BackendTest extends SapphireTest
             $response = $backend->scanStream(TestClient::OK_SCAN_STRING);
             $this->assertTrue($response->isValid(), "Response is valid");
         } catch (\Exception) {
+            /** @phpstan-ignore method.alreadyNarrowedType */
             $this->assertFalse(true, "No exception should be thrown");
         }
     }
@@ -67,6 +68,7 @@ class BackendTest extends SapphireTest
             $response = $backend->scanFile($path);
             $this->assertTrue($response->isValid(), "Response is valid");
         } catch (\Exception) {
+            /** @phpstan-ignore method.alreadyNarrowedType */
             $this->assertFalse(true, "No exception should be thrown");
         }
     }
@@ -80,6 +82,7 @@ class BackendTest extends SapphireTest
             $response = $backend->scanResource($handle);
             $this->assertTrue($response->isValid(), "Response is valid");
         } catch (\Exception) {
+            /** @phpstan-ignore method.alreadyNarrowedType */
             $this->assertFalse(true, "No exception should be thrown");
         } finally {
             /** @phpstan-ignore variable.undefined */
@@ -98,6 +101,7 @@ class BackendTest extends SapphireTest
             $response = $backend->scanStream($contents);
             $this->assertTrue($response->isValid(), "Response is valid");
         } catch (\Exception) {
+            /** @phpstan-ignore method.alreadyNarrowedType */
             $this->assertFalse(true, "No exception should be thrown");
         }
     }
@@ -113,6 +117,7 @@ class BackendTest extends SapphireTest
             );
             $this->assertEquals('file.txt', $result['Filename']);
         } catch (\Exception) {
+            /** @phpstan-ignore method.alreadyNarrowedType */
             $this->assertFalse(true, "No exception should be thrown");
         } finally {
             // Clean up
@@ -158,6 +163,7 @@ class BackendTest extends SapphireTest
             );
             $this->assertEquals('stream.txt', $result['Filename']);
         } catch (\Exception) {
+            /** @phpstan-ignore method.alreadyNarrowedType */
             $this->assertFalse(true, "No exception should be thrown");
         } finally {
             if (is_resource($handle)) {
