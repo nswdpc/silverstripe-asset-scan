@@ -39,16 +39,18 @@ class TestClient
         if(!is_resource($resource)) {
             throw new \InvalidArgumentException("Resource argument is not a resource");
         }
+
         $contents = '';
         while (!feof($resource)) {
             $contents .= fread($resource, $max_chunk_size);
         }
+
         return $this->scanStream($contents, $max_chunk_size);
     }
 
-    public function scanStream(string $contents, int $max_chunk_size = 8192)
+    public function scanStream(string $contents, int $max_chunk_size = 8192): \NSWDPC\AssetScan\Tests\TestClientResult
     {
-        if($contents == self::BLOCK_SCAN_STRING) {
+        if($contents === self::BLOCK_SCAN_STRING) {
             return new TestClientResult(true, false, "BLOCK_SCAN_STRING signature found", "test-fail");
         } else {
             return new TestClientResult(false, true, "OK", "test-ok");

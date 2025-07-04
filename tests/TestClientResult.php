@@ -10,17 +10,11 @@ use NSWDPC\AssetScan\VirusFoundException;
 class TestClientResult
 {
 
-    protected $isFound = false;
-    protected $isOk = false;
-    protected $reason = '';
-    protected $id = '';
 
-    public function __construct(bool $isFound, bool $isOk, string $reason, string $id)
+
+
+    public function __construct(protected bool $isFound, protected bool $isOk, protected string $reason, protected string $id)
     {
-        $this->isFound = $isFound;
-        $this->isOk = $isOk;
-        $this->reason = $reason;
-        $this->id = $id;
     }
 
     public function isFound() : bool

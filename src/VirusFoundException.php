@@ -11,7 +11,7 @@ class VirusFoundException extends \Exception
     /**
      * Store the response of the scan
      */
-    protected $response = null;
+    protected $response;
 
     /**
      * Set a response

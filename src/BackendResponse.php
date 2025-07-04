@@ -9,39 +9,14 @@ class BackendResponse
 {
 
     /**
-     * @var bool
-     */
-    protected $isFound = true;
-
-    /**
-     * @var bool
-     */
-    protected $success = false;
-
-    /**
-     * @var string|null
-     */
-    protected $reason = null;
-
-    /**
-     * @var string|null
-     */
-    protected $id = null;
-
-    /**
      * Create a response based on whatever the backend in use returned
      * @param bool $isFound whether the backend detected a virus
      * @param bool $success whether the backend had a successful scan
      * @param string $reason the backend reason string, optional
      * @param string $id backend session id for the scan, optional
      */
-    public function __construct(bool $isFound, bool $success, ?string $reason = null, ?string $id = null)
+    public function __construct(protected bool $isFound, protected bool $success, protected ?string $reason = null, protected ?string $id = null)
     {
-
-        $this->isFound = $isFound;
-        $this->success = $success;
-        $this->reason = $reason;
-        $this->id = $id;
 
         if($this->isFound) {
             // Create and throw exception immediately
@@ -51,7 +26,7 @@ class BackendResponse
         }
 
         if(!$this->success) {
-            $msg = "Scan failed: " . ($this->reason ? $this->reason : '');
+            $msg = "Scan failed: " . ($this->reason ?: '');
             Logger::log($msg, "ERROR");
             throw new \Exception($msg);
         }
