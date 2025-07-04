@@ -25,7 +25,7 @@ class BackendResponse
         }
 
         if (!$this->success) {
-            $msg = "Scan failed: " . ($this->reason !== null && $this->reason !== '' && $this->reason !== '0' ? $this->reason : '');
+            $msg = "Scan failed: " . ($this->reason !== null && $this->reason !== '' ? $this->reason : '');
             Logger::log($msg, "ERROR");
             throw new \Exception($msg);
         }
