@@ -38,7 +38,7 @@ class BackendTest extends SapphireTest
      */
     protected function checkValidationResult(\Exception $exception): void
     {
-        $this->assertEquals(ValidationException::class, $exception::class);
+        $this->assertInstanceof(ValidationException::class, $exception);
         $result = $exception->getResult();
         $this->assertInstanceof(ValidationResult::class, $result);
         $messages = $result->getMessages();
