@@ -7,9 +7,9 @@ namespace NSWDPC\AssetScan;
  */
 class VirusFoundException extends \Exception
 {
-    public const SCAN_FAIL_VALIDATION_CODE = 'VirusFoundException';
+    public const SCAN_FAIL_VALIDATION_CODE = 'SCAN_FAIL';
 
-    public const GENERAL_ERROR_VALIDATION_CODE = 'VirusFoundException';
+    public const GENERAL_ERROR_VALIDATION_CODE = 'GENERAL_FAIL';
 
     /**
      * Store the response of the scan
