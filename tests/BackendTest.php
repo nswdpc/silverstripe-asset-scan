@@ -8,6 +8,8 @@ use NSWDPC\AssetScan\ScanningFlysystemAssetStore;
 use SilverStripe\Assets\Storage\AssetStore;
 use SilverStripe\Assets\File;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Core\Validation\ValidationException;
+use SilverStripe\Core\Validation\ValidationResult;
 use SilverStripe\Dev\SapphireTest;
 
 class BackendTest extends SapphireTest
@@ -31,10 +33,16 @@ class BackendTest extends SapphireTest
         );
     }
 
-    #[\Override]
-    protected function tearDown(): void
+    /**
+     * Check validation result for BackendTest
+     */
+    protected function checkValidationResult(\Exception $exception): void
     {
-        parent::tearDown();
+        $this->assertEquals(ValidationException::class, $exception::class);
+        $result = $exception->getResult();
+        $this->assertInstanceof(ValidationResult::class, $result);
+        $messages = $result->getMessages();
+        $this->assertArrayHasKey(VirusFoundException::SCAN_FAIL_VALIDATION_CODE, $messages);
     }
 
     public function testFailString(): void
@@ -138,7 +146,7 @@ class BackendTest extends SapphireTest
             );
             $this->assertEmpty($result);
         } catch (\Exception $exception) {
-            $this->assertEquals(VirusFoundException::class, $exception::class);
+            $this->checkValidationResult($exception);
         } finally {
             // Clean up
             /** @phpstan-ignore variable.undefined */

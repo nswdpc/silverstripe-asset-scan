@@ -13,6 +13,8 @@ use SilverStripe\Assets\Flysystem\PublicAssetAdapter;
 use SilverStripe\Assets\Flysystem\ProtectedAssetAdapter;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Core\Validation\ValidationException;
+use SilverStripe\Core\Validation\ValidationResult;
 use SilverStripe\Dev\SapphireTest;
 
 class AssetStoreTest extends SapphireTest
@@ -33,6 +35,18 @@ class AssetStoreTest extends SapphireTest
             TestScanningBackend::create(),
             Backend::class
         );
+    }
+
+    /**
+     * Check validation result for AssetStoreTest
+     */
+    protected function checkValidationResult(\Exception $exception): void
+    {
+        $this->assertEquals(ValidationException::class, $exception::class);
+        $result = $exception->getResult();
+        $this->assertInstanceof(ValidationResult::class, $result);
+        $messages = $result->getMessages();
+        $this->assertArrayHasKey(VirusFoundException::SCAN_FAIL_VALIDATION_CODE, $messages);
     }
 
     public function testAssetStoreConfiguration(): void
@@ -134,7 +148,7 @@ class AssetStoreTest extends SapphireTest
             );
             $this->assertEmpty($result);
         } catch (\Exception $exception) {
-            $this->assertEquals(VirusFoundException::class, $exception::class);
+            $this->checkValidationResult($exception);
         } finally {
             // Clean up
             /** @phpstan-ignore variable.undefined */
@@ -216,7 +230,7 @@ class AssetStoreTest extends SapphireTest
             );
             $this->assertEmpty($result);
         } catch (\Exception $exception) {
-            $this->assertEquals(VirusFoundException::class, $exception::class);
+            $this->checkValidationResult($exception);
         } finally {
             // Clean up
             /** @phpstan-ignore variable.undefined */
