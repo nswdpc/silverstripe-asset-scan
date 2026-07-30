@@ -1,6 +1,6 @@
 # Asset scanner for Silverstripe
 
-Passes the stream representing an asset to a backend that can perform scanning. If the scan fails, information is logged for further review and the request to store the asset fails.
+Passes the stream representing an asset to a backend that can perform scanning. If the scan fails, information is logged for further review, the request to store the asset fails and the process throws a `ValidationException`.
 
 This works with assets being stored via:
 + Uploads

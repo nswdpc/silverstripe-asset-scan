@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace NSWDPC\AssetScan;
 
 use Psr\Log\LoggerInterface;

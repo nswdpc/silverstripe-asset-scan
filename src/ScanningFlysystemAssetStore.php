@@ -3,6 +3,8 @@
 namespace NSWDPC\AssetScan;
 
 use SilverStripe\Assets\Flysystem\FlysystemAssetStore;
+use SilverStripe\Core\Validation\ValidationException;
+use SilverStripe\Core\Validation\ValidationResult;
 use SilverStripe\Core\Config\Config;
 
 /**
@@ -44,8 +46,15 @@ class ScanningFlysystemAssetStore extends FlysystemAssetStore
             // Handle default file operation
             return parent::setFromStream($stream, $filename, $hash, $variant, $config);
         } catch (\Exception $exception) {
-            // Rethrow to ensure uploads fail
-            throw $exception;
+            // Catch the specific exception and rethrow it as a validation exception
+            // for uploaders to catch
+            throw ValidationException::create(
+                ValidationResult::create()->addError(
+                    _t('AssetScan.FILE_COULD_NOT_BE_ACCEPTED', 'The file could not be accepted'),
+                    ValidationResult::TYPE_ERROR,
+                    ($exception instanceof VirusFoundException ? VirusFoundException::SCAN_FAIL_VALIDATION_CODE : VirusFoundException::GENERAL_ERROR_VALIDATION_CODE)
+                )
+            );
         } finally {
             // Ensure pointer is closed, if it exists
             if (is_resource($stream)) {
